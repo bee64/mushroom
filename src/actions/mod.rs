@@ -1,4 +1,5 @@
 use bevy::math::Vec3Swizzles;
+use bevy::app::AppExit;
 use bevy::prelude::*;
 
 use crate::actions::game_control::{get_movement, GameControl};
@@ -15,6 +16,7 @@ pub struct ActionsPlugin;
 // Actions can then be used as a resource in other systems to act on the player input.
 impl Plugin for ActionsPlugin {
     fn build(&self, app: &mut App) {
+        // TODO add this the same way as the others - add this plugin on GameState::Playing enter
         app.init_resource::<Actions>().add_systems(
             Update,
             set_movement_actions.run_if(in_state(GameState::Playing)),
@@ -29,11 +31,16 @@ pub struct Actions {
 
 pub fn set_movement_actions(
     mut actions: ResMut<Actions>,
+    mut exit: EventWriter<AppExit>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
     touch_input: Res<Touches>,
     player: Query<&Transform, With<Player>>,
     camera: Query<(&Camera, &GlobalTransform), With<Camera2d>>,
 ) {
+    if keyboard_input.just_pressed(KeyCode::Escape) {
+        exit.send(AppExit::Success);
+    }
+
     let mut player_movement = Vec2::new(
         get_movement(GameControl::Right, &keyboard_input)
             - get_movement(GameControl::Left, &keyboard_input),
