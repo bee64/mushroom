@@ -32,6 +32,7 @@ fn main() {
                     ..default()
                 }),
         )
+        // GamePlugin in lib.rs starts the actual game logic
         .add_plugins(GamePlugin)
         .add_systems(Startup, set_window_icon)
         .run();

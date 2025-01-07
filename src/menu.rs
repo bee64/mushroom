@@ -33,7 +33,6 @@ struct Menu;
 
 fn setup_menu(mut commands: Commands, _textures: Res<TextureAssets>) {
     info!("menu");
-    commands.spawn((Camera2d, Msaa::Off));
     commands
         .spawn((
             Node {
@@ -76,9 +75,6 @@ fn setup_menu(mut commands: Commands, _textures: Res<TextureAssets>) {
 #[derive(Component)]
 struct ChangeState(GameState);
 
-#[derive(Component)]
-struct OpenLink(&'static str);
-
 fn control_play_button(
     mut next_state: ResMut<NextState<GameState>>,
     mut interaction_query: Query<
@@ -87,12 +83,11 @@ fn control_play_button(
             &mut BackgroundColor,
             &ButtonColors,
             Option<&ChangeState>,
-            Option<&OpenLink>,
         ),
         (Changed<Interaction>, With<Button>),
     >,
 ) {
-    for (interaction, mut color, button_colors, change_state, open_link) in &mut interaction_query {
+    for (interaction, mut color, button_colors, change_state) in &mut interaction_query {
         match *interaction {
             Interaction::Pressed => {
                 if let Some(state) = change_state {

@@ -18,13 +18,13 @@ impl Plugin for PlayerPlugin {
 }
 
 fn spawn_player(mut commands: Commands, textures: Res<TextureAssets>) {
-    let mut sprite = Sprite::from_image(textures.purpleMushroom.clone());
-    sprite.custom_size = Some(Vec2::new(512.0, 512.0));
-    commands.spawn((
-        sprite,
-        Transform::from_translation(Vec3::new(0., 0., 1.)),
-        Player,
-    ));
+    // let mut sprite = Sprite::from_image(textures.purpleMushroom.clone());
+    // sprite.custom_size = Some(Vec2::new(512.0, 512.0));
+    // commands.spawn((
+    //     sprite,
+    //     Transform::from_translation(Vec3::new(0., 0., 1.)),
+    //     Player,
+    // ));
 }
 
 fn move_player(
