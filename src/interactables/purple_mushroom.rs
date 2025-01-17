@@ -1,4 +1,4 @@
-use crate::loading::TextureAssets;
+use crate::asset_loader::TextureAssets;
 use crate::GameState;
 use bevy::prelude::*;
 
@@ -17,10 +17,8 @@ fn spawn(mut commands: Commands, textures: Res<TextureAssets>) {
     // TODO: camera should probably be it's own plugin?
     commands.spawn((Camera2d, Msaa::Off));
 
-    let mut sprite = Sprite::from_image(textures.purpleMushroom.clone());
-    sprite.custom_size = Some(Vec2::new(512.0, 512.0));
     commands.spawn((
-        sprite,
+        Sprite::from_image(textures.purple_mushroom.clone()),
         Transform::from_translation(Vec3::new(0., 0., 1.)),
         PurpleMushroom,
     ))

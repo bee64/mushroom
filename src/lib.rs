@@ -1,17 +1,11 @@
 #![allow(clippy::type_complexity)]
 
-mod actions;
-mod audio;
-mod loading;
+mod asset_loader;
 mod menu;
-mod player;
 mod interactables;
 
-use crate::actions::ActionsPlugin;
-use crate::audio::InternalAudioPlugin;
-use crate::loading::LoadingPlugin;
+use crate::asset_loader::AssetLoaderPlugin;
 use crate::menu::MenuPlugin;
-use crate::player::PlayerPlugin;
 use crate::interactables::purple_mushroom::PurpleMushroomPlugin;
 
 use bevy::app::App;
@@ -38,11 +32,8 @@ pub struct GamePlugin;
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.init_state::<GameState>().add_plugins((
-            LoadingPlugin,
+            AssetLoaderPlugin,
             MenuPlugin,
-            ActionsPlugin,
-            InternalAudioPlugin,
-            PlayerPlugin,
             PurpleMushroomPlugin,
         ));
 
