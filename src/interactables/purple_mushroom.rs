@@ -10,6 +10,7 @@ pub struct PurpleMushroom;
 impl Plugin for PurpleMushroomPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(GameState::Playing), spawn);
+        // TODO watch for PurpleMushroom timer to complete
     }
 }
 

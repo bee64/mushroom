@@ -7,6 +7,8 @@ mod interactables;
 use crate::asset_loader::AssetLoaderPlugin;
 use crate::menu::MenuPlugin;
 use crate::interactables::purple_mushroom::PurpleMushroomPlugin;
+use crate::interactables::spore_print::SporePrintPlugin;
+use crate::interactables::circle::CirclePlugin;
 
 use bevy::app::App;
 #[cfg(debug_assertions)]
@@ -34,7 +36,10 @@ impl Plugin for GamePlugin {
         app.init_state::<GameState>().add_plugins((
             AssetLoaderPlugin,
             MenuPlugin,
+            // TODO organize "draggable thing" plugins so they all get loaded in their own plugin
             PurpleMushroomPlugin,
+            SporePrintPlugin,
+            CirclePlugin,
         ));
 
         #[cfg(debug_assertions)]

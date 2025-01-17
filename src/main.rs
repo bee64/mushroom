@@ -12,7 +12,7 @@ use winit::window::Icon;
 
 fn main() {
     App::new()
-        .insert_resource(ClearColor(Color::linear_rgb(0.5373, 0.8, 0.0157)))
+        .insert_resource(ClearColor(Color::linear_rgb(0.8, 0.76, 0.61)))
         .add_plugins(
             DefaultPlugins
                 .set(WindowPlugin {
