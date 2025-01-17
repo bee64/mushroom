@@ -32,14 +32,15 @@ fn spawn(mut commands: Commands, textures: Res<TextureAssets>) {
     })
     .observe(|
         _trigger: Trigger<Pointer<DragEnd>>,
-        mut transforms: Query<&mut Transform, With<Sprite>>
+        mut transforms: Query<(&Transform, &Sprite), With<Sprite>>,
+        assets: Res<Assets<Image>>,
     |{
         let mut combos = transforms.iter_combinations_mut();
-        while let Some([trans1, trans2]) = combos.fetch_next() {
-            // TODO collision is pretty janky, hitboxes are very picky
-            let collision = Aabb2d::new(trans1.translation.truncate(), trans1.scale.truncate() / 2.)
-                .intersects(&Aabb2d::new(trans2.translation.truncate(), trans2.scale.truncate() / 2.));
-            println!("thign!");
+        while let Some([(trans1, sprite1), (trans2, sprite2)]) = combos.fetch_next() {
+            let size1 = get_sprite_size(&assets, trans1, sprite1);
+            let size2 = get_sprite_size(&assets, trans2, sprite2);
+            let collision = Aabb2d::new(trans1.translation.truncate(), size1.half_size())
+                .intersects(&Aabb2d::new(trans2.translation.truncate(), size2.half_size()));
             
             if collision {
                 println!("There was a collision!");
@@ -47,4 +48,13 @@ fn spawn(mut commands: Commands, textures: Res<TextureAssets>) {
             }
         }
     });
+}
+
+// unscaled sprite size
+fn get_sprite_size(assets: &Res<Assets<Image>>, transform: &Transform, sprite: &Sprite) -> Rect {
+    let image_size = &assets.get(&sprite.image).unwrap().size_f32();
+    let scaled = image_size * transform.scale.truncate();
+    let bounding_box = Rect::from_center_size(transform.translation.truncate(), scaled);
+
+    return bounding_box;
 }
