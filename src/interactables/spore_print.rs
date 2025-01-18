@@ -3,6 +3,8 @@ use crate::GameState;
 use bevy::math::bounding::{Aabb2d, IntersectsVolume};
 use bevy::prelude::*;
 
+use super::purple_mushroom::SpawnPurpleMushroom;
+
 pub struct SporePrintPlugin;
 
 #[derive(Component)]
@@ -10,7 +12,30 @@ pub struct SporePrint;
 
 impl Plugin for SporePrintPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(GameState::Playing), spawn);
+        app
+            .add_systems(OnEnter(GameState::Playing), spawn)
+            .add_systems(Update, grow);
+    }
+}
+
+#[derive(Component)]
+pub struct SporeGrowthTimer {
+    timer: Timer,
+    position: Vec3,
+}
+fn grow (
+    mut spore_growth_timers: Query<&mut SporeGrowthTimer>,
+    time: Res<Time>,
+    mut commands: Commands,
+) {
+    for (mut growth_timer) in spore_growth_timers.iter_mut() {
+        growth_timer.timer.tick(time.delta());
+
+        if growth_timer.timer.just_finished() {
+            commands.trigger(SpawnPurpleMushroom {
+                position: growth_timer.position
+            })
+        }
     }
 }
 
@@ -34,6 +59,7 @@ fn spawn(mut commands: Commands, textures: Res<TextureAssets>) {
         _trigger: Trigger<Pointer<DragEnd>>,
         mut transforms: Query<(&Transform, &Sprite), With<Sprite>>,
         assets: Res<Assets<Image>>,
+        mut commands: Commands,
     |{
         let mut combos = transforms.iter_combinations_mut();
         while let Some([(trans1, sprite1), (trans2, sprite2)]) = combos.fetch_next() {
@@ -44,17 +70,18 @@ fn spawn(mut commands: Commands, textures: Res<TextureAssets>) {
             
             if collision {
                 println!("There was a collision!");
-                // TODO set a timer and spawn a mushroom on collision
+                // start the spore growth timer
+                commands.spawn( SporeGrowthTimer {
+                    timer: Timer::from_seconds(5.0, TimerMode::Once),
+                    position: trans1.translation,
+                });
             }
         }
     });
 }
 
-// unscaled sprite size
 fn get_sprite_size(assets: &Res<Assets<Image>>, transform: &Transform, sprite: &Sprite) -> Rect {
     let image_size = &assets.get(&sprite.image).unwrap().size_f32();
     let scaled = image_size * transform.scale.truncate();
-    let bounding_box = Rect::from_center_size(transform.translation.truncate(), scaled);
-
-    return bounding_box;
+    return Rect::from_center_size(transform.translation.truncate(), scaled);
 }

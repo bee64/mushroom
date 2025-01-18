@@ -1,26 +1,24 @@
 use crate::asset_loader::TextureAssets;
-use crate::GameState;
 use bevy::prelude::*;
-
-pub struct PurpleMushroomPlugin;
 
 #[derive(Component)]
 pub struct PurpleMushroom;
 
+pub struct PurpleMushroomPlugin;
 impl Plugin for PurpleMushroomPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(GameState::Playing), spawn);
-        // TODO watch for PurpleMushroom timer to complete
+        app.add_observer(on_grow_mushroom);
     }
 }
 
-fn spawn(mut commands: Commands, textures: Res<TextureAssets>) {
-    // TODO: camera should probably be it's own plugin?
-    commands.spawn((Camera2d, Msaa::Off));
-
+#[derive(Event)]
+pub struct SpawnPurpleMushroom {
+    pub position: Vec3
+}
+fn on_grow_mushroom(trigger: Trigger<SpawnPurpleMushroom>, mut commands: Commands, textures: Res<TextureAssets>) {
     commands.spawn((
         Sprite::from_image(textures.purple_mushroom.clone()),
-        Transform::from_translation(Vec3::new(0., 0., 1.)),
+        Transform::from_translation(Vec3::new(trigger.position.x, trigger.position.y, trigger.position.z + 1.0)),
         PurpleMushroom,
     ))
     .observe(|

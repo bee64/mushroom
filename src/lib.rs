@@ -3,8 +3,10 @@
 mod asset_loader;
 mod menu;
 mod interactables;
+mod main_camera;
 
 use crate::asset_loader::AssetLoaderPlugin;
+use crate::main_camera::MainCameraPlugin;
 use crate::menu::MenuPlugin;
 use crate::interactables::purple_mushroom::PurpleMushroomPlugin;
 use crate::interactables::spore_print::SporePrintPlugin;
@@ -36,6 +38,7 @@ impl Plugin for GamePlugin {
         app.init_state::<GameState>().add_plugins((
             AssetLoaderPlugin,
             MenuPlugin,
+            MainCameraPlugin,
             // TODO organize "draggable thing" plugins so they all get loaded in their own plugin
             PurpleMushroomPlugin,
             SporePrintPlugin,
