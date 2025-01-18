@@ -28,7 +28,7 @@ fn grow (
     time: Res<Time>,
     mut commands: Commands,
 ) {
-    for (mut growth_timer) in spore_growth_timers.iter_mut() {
+    for mut growth_timer in spore_growth_timers.iter_mut() {
         growth_timer.timer.tick(time.delta());
 
         if growth_timer.timer.just_finished() {
